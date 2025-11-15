@@ -60,9 +60,10 @@ void init_tsl(TableSchema_List tsl);
 void add_to_tsl(TableSchema_List * tsl, TableSchema * table_schema); 
 
 BTree_Node * create_btree_node();
-TableSchema * create_table();
+void create_table();
 
 
 int db_main ();
+int db_init_main();
 
 #endif
