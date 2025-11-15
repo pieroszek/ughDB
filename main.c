@@ -11,8 +11,9 @@ void print_prompt(){
 
 void handle_command(char * command){
 	if(strcmp(command, "create table") == 0) {
-		printf("creating table...\n");
+	
 		create_table_flag = 1;
+		db_main();
 	}
 	return;
 }
@@ -20,11 +21,13 @@ void handle_command(char * command){
 
 
 int main(int argc, char *argv[]){
-	db_main();
+	db_init_main();
 
-	char input[MAX_INPUT];
-    
-	if(0){ //only for compile
+	//char input[MAX_INPUT];
+	create_table_flag = 1;
+	db_main();
+	/*
+	if(1){ //only for compile
 	while (1) {
 		print_prompt();
 
@@ -42,5 +45,6 @@ int main(int argc, char *argv[]){
 		}
 	}
 	}
+	*/
 	return 0;
 }
