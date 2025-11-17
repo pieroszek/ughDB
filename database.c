@@ -1,10 +1,10 @@
 #include <string.h>
 #include "database.h"
+#include "file_io.c"
 
 int create_table_flag = 0; //making ure it starts at 0
 
-FILE_PTR_LIST TableSchema_File_Ptr_List;
-FILE_PTR_LIST TableData_File_Ptre_List;
+
 
 BTree_Root_List Root_Node_List;
 TableSchema_List Table_Schema_List;
@@ -15,10 +15,10 @@ BTree_Node * create_btree_node(){
 	return new_node;
 }
 
-void init_btrl(BTree_Root_List btrl){
-	btrl.len = 5;
-	btrl.List = malloc(sizeof(BTree_Node) * btrl.len);
-	btrl.counter = 0;
+void init_btrl(BTree_Root_List * btrl){
+	btrl->len = 5;
+	btrl->List = malloc(sizeof(BTree_Node) * btrl->len);
+	btrl->counter = 0;
 }
 
 
@@ -31,25 +31,26 @@ void add_to_btrl(BTree_Root_List * btrl, BTree_Node * node){
 	btrl->counter++;
 }
 
-void init_fpl(FILE_PTR_LIST fpl){
-	fpl.file_ptr_list = malloc(sizeof(FILE*) * 10);
-	fpl.counter = 0;
-	fpl.len = 10;
+void init_fpl(FILE_PTR_LIST * fpl){
+	fpl->file_ptr_list = malloc(sizeof(FILE) * 10);
+	fpl->counter = 0;
+	fpl->len = 10;
 }
 
-void add_to_fpl(FILE_PTR_LIST fpl, FILE * file_ptr){
-	if(fpl.counter == fpl.len - 1){
-		fpl.len += 2;
-		fpl.file_ptr_list = realloc(fpl.file_ptr_list, sizeof(FILE*) * fpl.len);
+void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr){
+	if(fpl->counter == fpl->len - 2){
+		fpl->len += 2;
+		fpl->file_ptr_list = realloc(fpl->file_ptr_list, sizeof(FILE*) * fpl->len);
 	}
-	fpl.counter++;
-	fpl.file_ptr_list[fpl.counter] = file_ptr;
+
+	fpl->file_ptr_list[fpl->counter] = file_ptr;
+	fpl->counter++;
 }
 
-void init_tsl(TableSchema_List tsl){
-	tsl.len = 5;
-	tsl.List = malloc(sizeof(TableSchema) * tsl.len);
-	tsl.counter = 0;
+void init_tsl(TableSchema_List * tsl){
+	tsl->len = 5;
+	tsl->List = malloc(sizeof(TableSchema) * tsl->len);
+	tsl->counter = 0;
 
 }
 
@@ -66,6 +67,7 @@ void create_table(){
 	//im creating a new root node and adding it to the list,
 	//the table schema should have the same index as the root node
 	BTree_Node * new_root_node = create_btree_node();
+	create_btree_file();
 	add_to_btrl(&Root_Node_List, new_root_node);
 	
 	TableSchema * newtable = malloc(sizeof(*newtable));
@@ -81,12 +83,12 @@ void create_table(){
 
 int db_init_main() {
 	//list to keep track of files where data is saved	
-	init_fpl(TableSchema_File_Ptr_List);
-	init_fpl(TableData_File_Ptre_List);
+	init_fpl(&TableSchema_File_Ptr_List);
+	init_fpl(&TableData_File_Ptr_List);
 
 	//list to keep track of live tables and data
-	init_btrl(Root_Node_List);
-	init_tsl(Table_Schema_List);
+	init_btrl(&Root_Node_List);
+	init_tsl(&Table_Schema_List);
 	
 
 	create_table_flag = 0;
