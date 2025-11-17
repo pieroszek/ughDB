@@ -15,8 +15,8 @@ typedef struct {
 	int len;
 } FILE_PTR_LIST;
 
-void add_to_fpl(FILE_PTR_LIST fpl, FILE * file_ptr);
-void init_fpl(FILE_PTR_LIST fpl);
+void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr);
+void init_fpl(FILE_PTR_LIST * fpl);
 
 typedef struct {
     char column_name[50];
@@ -47,7 +47,7 @@ typedef struct {
 	int len;
 } BTree_Root_List;
 
-void init_btrl(BTree_Root_List btrl);
+void init_btrl(BTree_Root_List * btrl);
 void add_to_btrl(BTree_Root_List * btrl, BTree_Node * node); 
 
 typedef struct {
@@ -56,7 +56,7 @@ typedef struct {
 	int len;
 } TableSchema_List;
 
-void init_tsl(TableSchema_List tsl);
+void init_tsl(TableSchema_List * tsl);
 void add_to_tsl(TableSchema_List * tsl, TableSchema * table_schema); 
 
 BTree_Node * create_btree_node();
