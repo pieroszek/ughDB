@@ -6,9 +6,12 @@
 //check for ./data
 void check_data_dir();
 
-// btree io 
+// create if not created file
 int create_btree_file();
+int create_ts_file();
 
+//
+void save_schema(TableSchema* schema, FILE* file);
 
 
 #endif
