@@ -32,7 +32,7 @@ void add_to_btrl(BTree_Root_List * btrl, BTree_Node * node){
 }
 
 void init_fpl(FILE_PTR_LIST * fpl){
-	fpl->file_ptr_list = malloc(sizeof(FILE) * 10);
+	fpl->file_ptr_list = malloc(sizeof(FILE*) * 10);
 	fpl->counter = 0;
 	fpl->len = 10;
 }
@@ -69,13 +69,13 @@ void create_table(){
 	BTree_Node * new_root_node = create_btree_node();
 	create_btree_file();
 	add_to_btrl(&Root_Node_List, new_root_node);
-	
+	create_ts_file();
 	TableSchema * newtable = malloc(sizeof(*newtable));
 	newtable->table_name = "table";
 	newtable->root_node_offset = 0x0; //todo when file read write is implemented
 	newtable->column_count = 0x0;
 	add_to_tsl(&Table_Schema_List, newtable);
-	
+	save_schema(newtable, TableSchema_File_Ptr_List.file_ptr_list[0]);
 	printf("creating table...\n");
 	
 }
