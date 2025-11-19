@@ -12,6 +12,6 @@ int create_ts_file();
 
 //
 void save_schema(TableSchema* schema, FILE* file);
-
+void load_schema(TableSchema* schema, FILE* file);
 
 #endif
