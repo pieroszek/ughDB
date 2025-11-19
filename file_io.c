@@ -44,3 +44,21 @@ void save_schema(TableSchema* schema, FILE* file) {
         fwrite(&schema->columns[i], sizeof(Column), 1, file);
     }
 }
+
+void load_schema(TableSchema* schema, FILE* file) {
+    // 1. Read fixed-size struct first
+    fread(schema, sizeof(TableSchema), 1, file);
+    
+    // 2. Read variable-length data in same order
+    int name_len;
+    fread(&name_len, sizeof(int), 1, file);
+    schema->table_name = malloc(name_len + 1);
+    fread(schema->table_name, 1, name_len, file);
+    schema->table_name[name_len] = '\0';
+    
+    // 3. Read columns
+    for(int i = 0; i < schema->column_count; i++) {
+        fread(&schema->columns[i], sizeof(Column), 1, file);
+    }
+}
+
