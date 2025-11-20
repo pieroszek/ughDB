@@ -63,6 +63,16 @@ void add_to_tsl(TableSchema_List * tsl, TableSchema * table_schema){
 	tsl->counter++;
 }
 
+void create_row(TableSchema* schema, void* input_data, row* row){
+	int current_offset = 0;
+	for (int i = 0; i < schema->column_count; i++) {
+		Column* col = &schema->columns[i];
+		void* column_data = (char*)input_data + col->column_offset;
+		memcpy(row->data + current_offset, column_data, col->column_size);
+		current_offset += col->column_size;
+	}
+}
+
 void create_table(){
 	//im creating a new root node and adding it to the list,
 	//the table schema should have the same index as the root node
