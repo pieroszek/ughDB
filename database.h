@@ -51,6 +51,11 @@ void init_btrl(BTree_Root_List * btrl);
 void add_to_btrl(BTree_Root_List * btrl, BTree_Node * node); 
 
 typedef struct {
+	char data[256]; //generic ahh blob of data
+} row;
+
+void create_row(TableSchema* schema, void* input_data, row* row);
+typedef struct {
 	TableSchema ** List;
 	int counter;
 	int len;
