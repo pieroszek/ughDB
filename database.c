@@ -18,6 +18,34 @@ void init_btrl(BTree_Root_List * btrl){
 	return;
 }
 
+Column * init_col(char * id, int type, int size, int offset){
+	Column * col = malloc(sizeof(Column*));
+	col->column_size = size;
+	col->column_type = type;
+	col->column_offset = offset;
+	col->column_name = malloc(sizeof(id));
+	col->column_name = id;
+	return col;
+}
+	
+
+void init_table_schema(TableSchema * ts){
+	Column * key_col = init_col("key", 0, sizeof(int), 0);
+	ts->table_name = "new_table";
+	ts->columns[0] = *key_col;
+	return;
+}
+
+void create_table(){
+	
+	/* create table schema */
+	TableSchema * newtable_ptr = malloc(sizeof(TableSchema*));
+	init_table_schema(newtable_ptr);
+
+	return;
+}
+
+
 int db_main(){
 	return 0;
 }
