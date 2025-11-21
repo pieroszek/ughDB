@@ -3,20 +3,18 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #define ORDER 200
 //4kb == 4096
 
-int create_table_flag;
-size_t name_table_flag;
+
+/* structts */
 
 typedef struct {
 	FILE ** file_ptr_list;
 	int counter;
 	int len;
-} FILE_PTR_LIST;
-
-void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr);
-void init_fpl(FILE_PTR_LIST * fpl);
+} FILE_PTR_LIST; //for keeping track of files
 
 typedef struct {
     char column_name[50];
@@ -26,11 +24,14 @@ typedef struct {
 } Column;
 
 typedef struct {
+	char data[256]; //generic ahh blob of data
+} row; 
+typedef struct {
     char * table_name;
     Column columns[20];
     long root_node_offset;  // Where the B-Tree root lives
     int column_count;
-} TableSchema;
+} TableSchema; //table meta data
 
 typedef struct {
 	int keys[2 * ORDER - 1];
@@ -40,33 +41,41 @@ typedef struct {
 	int is_leaf;
 } BTree_Node;
 
-
 typedef struct {
 	BTree_Node ** List;
 	int counter;
 	int len;
-} BTree_Root_List;
+} BTree_Root_List; //keep track of btree's with root nodes
 
-void init_btrl(BTree_Root_List * btrl);
-void add_to_btrl(BTree_Root_List * btrl, BTree_Node * node); 
 
-typedef struct {
-	char data[256]; //generic ahh blob of data
-} row;
 
-void create_row(TableSchema* schema, void* input_data, row* row);
+
 typedef struct {
 	TableSchema ** List;
 	int counter;
 	int len;
 } TableSchema_List;
 
+
+/**/
+
+/**/ 
+int create_table_flag;
+size_t name_table_flag;
+
+void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr);
+void init_fpl(FILE_PTR_LIST * fpl);
+
+void init_btrl(BTree_Root_List * btrl);
+void add_to_btrl(BTree_Root_List * btrl, BTree_Node * node);
+
+void create_row(TableSchema* schema, void* input_data, row* row);
+
 void init_tsl(TableSchema_List * tsl);
 void add_to_tsl(TableSchema_List * tsl, TableSchema * table_schema); 
 
 BTree_Node * create_btree_node();
 void create_table();
-
 
 int db_main ();
 int db_init_main();
