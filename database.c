@@ -24,7 +24,7 @@ Column * init_col(char * id, int type, int size, int offset){
 	col->column_size = size;
 	col->column_type = type;
 	col->column_offset = offset;
-	col->column_name = malloc(sizeof(id));
+	col->column_name = malloc(sizeof(strlen(id)) + 1);
 	col->column_name = id;
 	return col;
 }
@@ -35,7 +35,6 @@ void init_table_schema(TableSchema * ts){
 	ts->table_name = "new_table";
 	ts->columns = malloc(sizeof(Column)); // <<------ fml
 	ts->columns = key_col;
-
 	return;
 }
 
@@ -51,9 +50,21 @@ void create_table(){
 	/* create table schema */
 	TableSchema * newtable_ptr = malloc(sizeof(TableSchema));
 	init_table_schema(newtable_ptr);
+	newtable_ptr->root_node_offset = 0;
 
 	/* create btree root node to start the tree */
+	BTree_Node * new_root_node = create_btree_node(0);
 	
+
+	/* store btree on ptr list */ 
+	BTree_Ptr_List.List[BTree_Ptr_List.counter++] = new_root_node;
+	BTree_Ptr_List.counter++;
+
+	/* create btree file to store btree */
+	
+	/* add btree node to file and store offset in ts*/
+	
+
 	printf("table created\n");
 	return;
 }
