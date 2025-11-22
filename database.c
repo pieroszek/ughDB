@@ -14,9 +14,10 @@ void init_fpl(FILE_PTR_LIST * fpl){
 void init_btrl(BTree_Root_List * btrl){
 	btrl->counter = 0;
 	btrl->len = 5;
-	btrl->List = malloc(sizeof(BTree_Node*) * btrl->len);
+	btrl->List = malloc(sizeof(BTree_Node*) * btrl->len); //cookie crumb
 	return;
 }
+
 
 Column * init_col(char * id, int type, int size, int offset){
 	Column * col = malloc(sizeof(Column));
@@ -32,14 +33,14 @@ Column * init_col(char * id, int type, int size, int offset){
 void init_table_schema(TableSchema * ts){
 	Column * key_col = init_col("key", 0, sizeof(int), 0);
 	ts->table_name = "new_table";
-	ts->columns = malloc(sizeof(key_col)); // <<------ fml
+	ts->columns = malloc(sizeof(Column)); // <<------ fml
 	ts->columns = key_col;
 
 	return;
 }
 
 BTree_Node * create_btree_node(int is_leaf){
-	BTree_Node * node = malloc(sizeof(BTree_Node*));
+	BTree_Node * node = malloc(sizeof(BTree_Node));
 	node->key_i = -1; // -1 for empty
 	node->is_leaf = is_leaf; // 0 for false, 1 for true
 	return node;
@@ -48,7 +49,7 @@ BTree_Node * create_btree_node(int is_leaf){
 void create_table(){
 	printf("creating table...\n");
 	/* create table schema */
-	TableSchema * newtable_ptr = malloc(sizeof(TableSchema*));
+	TableSchema * newtable_ptr = malloc(sizeof(TableSchema));
 	init_table_schema(newtable_ptr);
 
 	/* create btree root node to start the tree */
