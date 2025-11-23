@@ -14,4 +14,7 @@ int create_ts_file();
 void save_schema(TableSchema* schema, FILE* file);
 void load_schema(TableSchema* schema, FILE* file);
 
+     
+int save_node(BTree_Node * node, FILE* file, long * offset, int return_offset);
+
 #endif
