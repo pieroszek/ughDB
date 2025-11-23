@@ -45,6 +45,18 @@ BTree_Node * create_btree_node(int is_leaf){
 	return node;
 }
 
+void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr){
+	/* size check */
+	if( (fpl->counter + 1) == (fpl->len) ) {
+		return;
+	}
+	
+	/* */
+	fpl->file_ptr_list[fpl->counter] = file_ptr;
+	fpl->counter++;	
+	return;
+}
+
 void create_table(){
 	printf("creating table...\n");
 	/* create table schema */
@@ -61,6 +73,10 @@ void create_table(){
 	BTree_Ptr_List.counter++;
 
 	/* create btree file to store btree */
+	int err_check = create_btree_file();
+	if(err_check){
+		printf("\n file_create_err \n");
+	}
 	
 	/* add btree node to file and store offset in ts*/
 	
