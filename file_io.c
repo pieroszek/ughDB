@@ -29,3 +29,20 @@ int create_ts_file(){
 }
 
       
+     
+int save_node(BTree_Node * node, FILE* file, long * offset, int return_offset){
+        if(!node || !file || !offset){
+                return 1;
+        }
+        if(return_offset) {
+        
+                /* write to file, save offset on long*/
+
+        }
+        if(!return_offset) {
+                /* write to file at offset */ 
+
+        }
+
+        return 0;
+}
