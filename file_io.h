@@ -2,6 +2,8 @@
 #ifndef FILE_IO_H
 
 #include <stdio.h>
+// int to number files with generic names
+int file_i;
 
 //check for ./data
 void check_data_dir();
