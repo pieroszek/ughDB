@@ -4,6 +4,7 @@
 FILE_PTR_LIST TableSchema_File_Ptr_List;
 FILE_PTR_LIST TableData_File_Ptr_List;
 // "./data" where files stored
+int file_i = 0;
 
 void check_data_dir(){
         system("mkdir -p data");
@@ -11,12 +12,16 @@ void check_data_dir(){
 
 
 int create_btree_file(){
-        FILE * file = fopen("data/btree_file.data","ab+");     
+        char * file_name = malloc(sizeof(char) * 50);
+        snprintf(file_name, (sizeof(char) * 50), "data/btree_file_%d", file_i);
+        printf("%s\n", file_name);
+        FILE * file = fopen(file_name,"ab+");     
         add_to_fpl(&TableData_File_Ptr_List, file);
        
         if(!file) {
                 return 1;
         }
+        file_i++;
         return 0;
 }
 
@@ -29,7 +34,6 @@ int create_ts_file(){
 }
 
       
-     
 int save_node(BTree_Node * node, FILE* file, long * offset, int return_offset){
         if(!node || !file || !offset){
                 return 1;
