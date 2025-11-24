@@ -32,6 +32,8 @@ typedef struct {
     Column * columns;
     long root_node_offset;  // Where the B-Tree root lives
     int column_count;
+    int btree_file_index;
+    int schema_file_index;
 } TableSchema; //table meta data
 
 typedef struct {
@@ -62,7 +64,9 @@ typedef struct {
 
 /**/ 
 int create_table_flag;
+int create_column_flag;
 size_t name_table_flag;
+char * last_command;
 
 void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr);
 void init_fpl(FILE_PTR_LIST * fpl);
@@ -76,6 +80,7 @@ void add_to_tsl(TableSchema_List * tsl, TableSchema * table_schema);
 BTree_Node * create_btree_node(int is_leaf);
 
 void create_table();
+void create_column(char * name);
 void init_table_schema(TableSchema * ts);
 
 void create_row(TableSchema* schema, void* input_data, row* row);
@@ -85,4 +90,4 @@ Column * init_col(char * id, int type, int size, int offset);
 int db_main ();
 int db_init_main();
 
-#endif
+#
