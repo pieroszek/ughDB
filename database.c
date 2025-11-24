@@ -56,7 +56,13 @@ void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr){
 	return;
 }
 
+void create_column(char * name){
+	create_column_flag = 0;
+	return;
+}
+
 void create_table(){
+	create_table_flag = 0;
 	printf("creating table...\n");
 	/* create table schema */
 	TableSchema * newtable_ptr = malloc(sizeof(TableSchema));
@@ -92,11 +98,15 @@ int db_main(){
 	if(create_table_flag){
 		create_table();
 	}
+	if(create_column_flag){
+		create_column(last_command);
+	}
 	return 0;
 }
 
 int db_init_main(){
 	create_table_flag = 0; //0 is false, 1 is triggers create_table()	
+	create_column_flag = 0;
 
 	init_fpl(&TableSchema_File_Ptr_List);
 	init_fpl(&TableData_File_Ptr_List);
