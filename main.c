@@ -6,28 +6,59 @@
 
 void print_prompt(){
 
-	if(create_column_flag == 1){
-			printf("column_name> ");
+	/* create col */
+	if(create_column_flag == 3){
+		printf("column_table> ");
 	}
-	else {
-		printf("db> ");
+	if(create_column_flag == 2){
+		printf("column_name> ");
+	}
+	if(create_column_flag == 1){
+		printf("column_type> ");
+	}
+	
+	/* create table */
+	if(create_table_flag == 2){
+		printf("table_name> ");
+	}
+	
+	/* */
+	if(create_table_flag == 0) {
+		if(create_column_flag == 0){
+			printf("db> ");
+		}
 	}
 }
 
 
 void handle_command(char * command){
-	last_command = command; //for use to name obj's
-	if(create_column_flag){
-		db_main();
+
+	/* col */
+	if(create_column_flag == 1){
+		last_command = command; // last_command hold col type
+		db_main(); // with the name and type we go to db_main
 	}
-	if(strcmp(command, "create table") == 0) {
+	if(create_column_flag == 2){
+		saved_command = command; // saved command holds col name
+		create_column_flag = 1; //once we got the name we ask for type 
+	}
+	if(create_column_flag == 3){
+		saved_command_2 = command; // holds table name
+		// should add check if table name exists
+		create_column_flag = 2;
+	}
+	if(strcmp(command, "create column") == 0) {
+		create_column_flag = 3;
+	}
 	
+	/* table */
+	if(create_table_flag == 2){
+		last_command = command; //holds table name
 		create_table_flag = 1;
 		db_main();
 	}
-	if(strcmp(command, "create column") == 0) {
-	
-		create_column_flag = 1;
+	if(strcmp(command, "create table") == 0) {
+		create_table_flag = 2; // get table name
 	}
 	
 
