@@ -1,97 +1,134 @@
-#include "database.c"
-#include <stdio.h>
+#include <string.h>
+#include "database.h"
+#include "file_io.c"
 
+BTree_Root_List BTree_Ptr_List;
 
-#define MAX_INPUT 100
-
-void print_prompt(){
-
-	/* create col */
-	if(create_column_flag == 3){
-		printf("column_table> ");
-	}
-	if(create_column_flag == 2){
-		printf("column_name> ");
-	}
-	if(create_column_flag == 1){
-		printf("column_type> ");
-	}
-	
-	/* create table */
-	if(create_table_flag == 2){
-		printf("table_name> ");
-	}
-	
-	/* */
-	if(create_table_flag == 0) {
-		if(create_column_flag == 0){
-			printf("db> ");
-		}
-	}
+void init_fpl(FILE_PTR_LIST * fpl){
+	fpl->counter = 0;
+	fpl->len = 5;
+	fpl->file_ptr_list = malloc(sizeof(FILE*) * fpl->len);
+	return;
 }
 
-
-void handle_command(char * command){
-
-	/* col */
-	if(create_column_flag == 1){
-		last_command = command; // last_command hold col type
-		db_main(); // with the name and type we go to db_main
-	}
-	if(create_column_flag == 2){
-		saved_command = command; // saved command holds col name
-		create_column_flag = 1; //once we got the name we ask for type 
-	}
-	if(create_column_flag == 3){
-		saved_command_2 = command; // holds table name
-		// should add check if table name exists
-		create_column_flag = 2;
-	}
-	if(strcmp(command, "create column") == 0) {
-		create_column_flag = 3;
-	}
-	
-	/* table */
-	if(create_table_flag == 2){
-		last_command = command; //holds table name
-		create_table_flag = 1;
-		db_main();
-	}
-	if(strcmp(command, "create table") == 0) {
-		create_table_flag = 2; // get table name
-	}
-	
-
+void init_btrl(BTree_Root_List * btrl){
+	btrl->counter = 0;
+	btrl->len = 5;
+	btrl->List = malloc(sizeof(BTree_Node*) * btrl->len); //cookie crumb
 	return;
 }
 
 
+Column * init_col(char * id, col_type_enum type, int size, int offset){
+	Column * col = malloc(sizeof(Column));
+	col->column_size = size;
+	col->column_type = type;
+	col->column_offset = offset;
+	col->column_name = malloc(sizeof(strlen(id)) + 1);
+	strcpy(col->column_name, id);
+	return col;
+}
 
-int main(int argc, char *argv[]){
-	db_init_main();
 
-	char input[MAX_INPUT];
+void init_table_schema(TableSchema * ts, char * table_name){
+	Column * key_col = init_col("key", 0, sizeof(int), 0);
+	ts->table_name = table_name;
+	ts->columns = key_col;
+	return;
+}
 
-	
-	if(1){ //only for compile
-	while (1) {
+BTree_Node * create_btree_node(int is_leaf){
+	BTree_Node * node = malloc(sizeof(BTree_Node));
+	node->key_i = -1; // -1 for empty
+	node->is_leaf = is_leaf; // 0 for false, 1 for true
+	return node;
+}
 
-		print_prompt();
-	
-		if (fgets(input, sizeof(input), stdin)) {
-			// Remove newline
-			input[strcspn(input, "\n")] = 0;
-
-			// Handle empty input
-			if (strlen(input) == 0) {
-				continue;
-			}
-
-			handle_command(input);
-		}
-		
+void add_to_fpl(FILE_PTR_LIST * fpl, FILE * file_ptr){
+	/* size check */
+	if( (fpl->counter + 1) == (fpl->len) ) {
+		return;
 	}
+	
+	/* */
+	fpl->file_ptr_list[fpl->counter] = file_ptr;
+	fpl->counter++;	
+	return;
+}
+
+void create_column(char * name, char * type, char * table_name){
+	create_column_flag = 0;
+	/* parse type */
+	col_type_enum type_param = EMPTY;
+	if(strcmp(type, "int") == 0){
+		type_param = 0;
+	}
+
+	/* create column with the name */
+	Column * new_col = init_col(name, type_param, 1/*should be from table->column_counter */, 0);
+	if(!new_col){
+		return;
 	}
 	
+	/* modify table schema for the new column */
+	
+	/* get type now or with first append */
+	
+	return;
+}
+
+void create_table(){
+	create_table_flag = 0;
+	printf("creating table...\n");
+	/* create table schema */
+	TableSchema * newtable_ptr = malloc(sizeof(TableSchema));
+	init_table_schema(newtable_ptr, last_command);
+	newtable_ptr->root_node_offset = 0;
+
+	/* create btree root node to start the tree */
+	BTree_Node * new_root_node = create_btree_node(0);
+	
+
+	/* store btree on ptr list */ 
+	BTree_Ptr_List.List[BTree_Ptr_List.counter] = new_root_node;
+	newtable_ptr->btree_file_index = BTree_Ptr_List.counter;
+	BTree_Ptr_List.counter++;
+
+	/* create btree file to store btree */
+	int err_check = create_btree_file();
+	if(err_check){
+		printf("\n file_create_err \n");
+	}
+	
+	/* add btree node to file and store offset in ts*/
+	long * root_offset = malloc(sizeof(long));
+	save_node(new_root_node, TableData_File_Ptr_List.file_ptr_list[newtable_ptr->btree_file_index], root_offset, 1);
+	newtable_ptr->root_node_offset = *root_offset;
+
+	printf("table created\n");
+	return;
+}
+
+
+int db_main(){
+	if(create_table_flag){
+		create_table();
+	}
+	if(create_column_flag){
+		create_column(saved_command,last_command,saved_command_2);
+		// params ( col name , col type , table to add col to ) 
+	}
+	return 0;
+}
+
+int db_init_main(){
+	create_table_flag = 0; //0 is false, 1 is triggers create_table()	
+	create_column_flag = 0; //0 is false, 2 and 1 are states
+
+	init_fpl(&TableSchema_File_Ptr_List);
+	init_fpl(&TableData_File_Ptr_List);
+
+	init_btrl(&BTree_Ptr_List);
+
 	return 0;
 }
