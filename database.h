@@ -38,9 +38,10 @@ typedef struct {
 
 typedef struct {
     char * table_name;
-    Column * columns;
+    Column ** columns;
     long root_node_offset;  // Where the B-Tree root lives
     int column_count;
+    int column_len;
     int btree_file_index;
     int schema_file_index;
 } TableSchema; //table meta data
@@ -74,7 +75,9 @@ typedef struct {
 /**/ 
 int create_table_flag;
 int create_column_flag;
+int show_table_flag;
 size_t name_table_flag;
+
 char * last_command; //last input from user
 char * saved_command; //saved input from user
 char * saved_command_2; //second saved input from user
@@ -90,15 +93,17 @@ void add_to_tsl(TableSchema_List * tsl, TableSchema * table_schema);
 
 BTree_Node * create_btree_node(int is_leaf);
 
-void create_table();
+void create_table(char * table_name);
 void create_column(char * name, char * type,char * table_name);
 void init_table_schema(TableSchema * ts, char * table_name);
 
-TableSchema* find_table_by_name(char * table_name, FILE_PTR_LIST * fpl);
+void show_table(char * table_name);
 
 void create_row(TableSchema* schema, void* input_data, row* row);
 
 Column * init_col(char * id, col_type_enum type, int size, int offset);
+
+TableSchema* find_table_by_name(char * table_name, TableSchema_List * tsl );
 
 int db_main ();
 int db_init_main();
