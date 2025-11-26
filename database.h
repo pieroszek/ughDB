@@ -94,6 +94,7 @@ void create_table();
 void create_column(char * name, char * type,char * table_name);
 void init_table_schema(TableSchema * ts, char * table_name);
 
+TableSchema* find_table_by_name(char * table_name, FILE_PTR_LIST * fpl);
 
 void create_row(TableSchema* schema, void* input_data, row* row);
 
