@@ -21,13 +21,20 @@ void print_prompt(){
 	if(create_table_flag == 2){
 		printf("table_name> ");
 	}
-	
-	/* */
+	/* show table */
+	if(show_table_flag == 1){
+		printf("table_name> ");
+	}
+	/* this is temporary */
 	if(create_table_flag == 0) {
 		if(create_column_flag == 0){
-			printf("db> ");
+			if(show_table_flag == 0){
+				printf("db> ");
+			}
 		}
 	}
+
+
 }
 
 
@@ -61,6 +68,18 @@ void handle_command(char * command){
 		create_table_flag = 2; // get table name
 	}
 	
+
+	/* show table content */
+
+	if(show_table_flag == 1){
+		last_command = command;
+		db_main();
+	}
+	if(strcmp(command, "show table") == 0) {
+		show_table_flag = 1; // get table name
+	
+	}
+
 
 	return;
 }
