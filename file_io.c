@@ -41,12 +41,28 @@ int save_node(BTree_Node * node, FILE* file, long * offset, int return_offset){
         if(return_offset) {
         
                 /* write to file, save offset on long*/
+		*offset = 0; //since root and i know this is shit
+		//FILE* file = fopen(filename, "rb+"); // fucked 
+		if (fseek(file, 0, SEEK_SET) != 0) {
+			perror("Failed to seek to offset");
+			fclose(file);
+			return 1;
+		}
+		size_t bytes_written = fwrite(node, sizeof(BTree_Node), 1, file);
+		if (bytes_written != 1) {
+			perror("Failed to write node");
+			fclose(file);
+			return 1;
+		}
 
         }
         if(!return_offset) {
                 /* write to file at offset */ 
-
+		
         }
+
+	fflush(file);
+	fclose(file);
 
         return 0;
 }
